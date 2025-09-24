@@ -1,0 +1,18 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Load SOPS values
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Load vars task
+      community.sops.load_vars:
+        file: secrets/secrets.yaml
+
+- name: Deploy OpenShift Local (crc) and GitOps + KSOPS
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: crc
+    - role: openshift_gitops_ksops
+      vars:
+        openshift_gitops_ksops_age_keys: "{{ hostvars['localhost']['age_keys'] }}"

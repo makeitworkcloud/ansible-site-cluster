@@ -1,0 +1,6 @@
+---
+# tasks file for ksopsgitops
+- name: Running gitops.yml
+  ansible.builtin.include_tasks: gitops.yml
+- name: Running ksops.yml
+  ansible.builtin.include_tasks: ksops.yml

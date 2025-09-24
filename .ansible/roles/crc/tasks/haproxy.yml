@@ -1,0 +1,42 @@
+---
+- name: Install haproxy
+  ansible.builtin.dnf:
+    name: haproxy
+    state: present
+  become: true
+  become_user: root
+
+- name: Check for backup file
+  ansible.builtin.stat:
+    path: /etc/haproxy/haproxy.cfg.orig
+  register: haproxy_backup
+
+- name: Backup haproxy.cfg
+  ansible.builtin.copy:
+    remote_src: true
+    src: /etc/haproxy/haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg.orig
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  become_user: root
+  when: not haproxy_backup.stat.exists
+
+- name: Propagate haproxy.cfg
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  become_user: root
+
+- name: Start & Enable haproxy
+  ansible.builtin.systemd:
+    name: haproxy.service
+    state: started
+    enabled: true
+  become: true
+  become_user: root
