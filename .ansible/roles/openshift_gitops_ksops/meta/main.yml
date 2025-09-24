@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  standalone: true
+  author: xnoto
+  description: Ansible role deploying OpenShift GitOps with KSOPS
+  role_name: openshift_gitops_ksops
+  company: Make IT Work Cloud
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.1"
+  galaxy_tags:
+    - ksops
+    - gitops
+    - openshift

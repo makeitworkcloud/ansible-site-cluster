@@ -1,0 +1,5 @@
+---
+- name: crc
+  src: https://github.com/makeitworkcloud/ansible-role-crc
+- name: openshift_gitops_ksops
+  src: https://github.com/makeitworkcloud/ansible-role-ksops

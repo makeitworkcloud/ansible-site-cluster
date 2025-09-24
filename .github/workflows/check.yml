@@ -1,0 +1,36 @@
+---
+name: Check Changes
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+env:
+  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
+jobs:
+  plan:
+    runs-on: libvirt
+    container: ghcr.io/makeitworkcloud/terraform-runner:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Git as root
+        run: git config --global --add safe.directory '*'
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: Copy SSH area
+        run: cp -r /root/.ssh /github/home/
+
+      - name: Ansible Check
+        run: |
+          rm -rf ~/.ansible >/dev/null 2>&1 || echo
+          ansible-galaxy install -r ansible/requirements.yml
+          ansible-playbook ansible/site.yml -u ${{ secrets.SSH_USER }} -i "${{ secrets.SSH_HOST }}," -C --diff

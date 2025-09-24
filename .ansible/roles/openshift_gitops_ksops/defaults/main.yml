@@ -1,0 +1,3 @@
+---
+# defaults file for openshift_gitops_ksops
+openshift_gitops_ksops_age_keys: ''

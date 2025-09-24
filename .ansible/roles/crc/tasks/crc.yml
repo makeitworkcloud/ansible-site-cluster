@@ -1,0 +1,67 @@
+---
+- name: Download & Extract crc
+  ansible.builtin.unarchive:
+    src: "https://developers.redhat.com/content-gateway/file/pub/openshift-v4/clients/crc/{{ crc_version | default('2.52.0') }}/crc-linux-amd64.tar.xz"
+    dest: /usr/local/bin/
+    remote_src: true
+    include: "crc-linux-{{ crc_version | default('2.52.0') }}-amd64/crc"
+    owner: root
+    group: root
+    mode: "0755"
+    extra_opts:
+      - --strip-components=1
+  become: true
+  become_user: root
+
+- name: Copy pull secret
+  ansible.builtin.copy:
+    content: "{{ crc_pull_secret | default('') }}"
+    dest: /usr/local/etc/pull-secret.txt
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  become_user: root
+
+- name: Setup crc
+  ansible.builtin.command: /usr/local/bin/crc setup
+  register: setup_crc_cmd
+  changed_when: setup_crc_cmd.rc != 0
+
+- name: Display output
+  ansible.builtin.debug:
+    var: "{{ item }}"
+  loop:
+    - setup_crc_cmd.stdout_lines
+    - setup_crc_cmd.stderr_lines
+
+- name: Configure crc
+  ansible.builtin.shell:
+    cmd: |
+      /usr/local/bin/crc config set consent-telemetry no
+      /usr/local/bin/crc config set cpus {{ crc_cpus | default('10') }}
+      /usr/local/bin/crc config set disk-size {{ crc_disk_size | default('500') }}
+      /usr/local/bin/crc config set kubeadmin-password {{ crc_kubeadmin_password | default('crc') }}
+      /usr/local/bin/crc config set memory {{ crc_memory | default('57344') }}
+      /usr/local/bin/crc config set pull-secret-file /usr/local/etc/pull-secret.txt
+  register: config_crc_cmd
+  changed_when: config_crc_cmd.rc != 0
+
+- name: Display output
+  ansible.builtin.debug:
+    var: "{{ item }}"
+  loop:
+    - config_crc_cmd.stdout_lines
+    - config_crc_cmd.stderr_lines
+
+- name: Start crc
+  ansible.builtin.command: crc start
+  register: start_crc_cmd
+  changed_when: start_crc_cmd.rc != 0
+
+- name: Display output
+  ansible.builtin.debug:
+    var: "{{ item }}"
+  loop:
+    - start_crc_cmd.stdout_lines
+    - start_crc_cmd.stderr_lines

@@ -1,0 +1,8 @@
+---
+- name: Remove default banner
+  kubernetes.core.k8s:
+    state: absent
+    api_version: console.openshift.io/v1
+    kind: ConsoleNotification
+    name: security-notice
+  ignore_errors: "{{ ansible_check_mode }}"

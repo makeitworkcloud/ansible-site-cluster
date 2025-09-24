@@ -1,0 +1,20 @@
+global
+
+defaults
+        log global
+        mode    http
+        timeout connect 5000
+        timeout client 5000
+        timeout server 5000
+
+frontend api
+    bind {{ ansible_default_ipv4.address }}:6443 interface {{ ansible_default_ipv4.interface }}
+    option tcplog
+    mode tcp
+    default_backend api
+
+backend api
+    mode tcp
+    balance roundrobin
+    option ssl-hello-chk
+    server webserver1 127.0.0.1:6443
