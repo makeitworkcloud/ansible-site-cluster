@@ -16,3 +16,57 @@
     - role: openshift_gitops_ksops
       vars:
         openshift_gitops_ksops_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
+  tasks:
+    - name: GitOps cluster mgmt ClusterRoleBinding
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: openshift-gitops-operator-cluster-admin
+          subjects:
+            - kind: ServiceAccount
+              name: openshift-gitops-argocd-application-controller
+              namespace: openshift-gitops
+          roleRef:
+            kind: ClusterRole
+            name: cluster-admin
+            apiGroup: rbac.authorization.k8s.io
+    - name: Argo CD GitHub Repo
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+        kind: Secret
+        metadata:
+          name: github-repo
+          namespace: openshift-gitops
+          labels:
+            argocd.argoproj.io/secret-type: repository
+        type: Opaque
+        data:
+          name: github-repo
+          url: "https://github.com/makeitworkcloud/gitops-cluster.git"
+          project: default
+          type: git
+    - name: ArgoCD Kustomize App
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: gitops-configs
+            namespace: openshift-gitops
+          spec:
+            source:
+              repoURL: "https://github.com/makeitworkcloud/gitops-cluster.git"
+              targetRevision: main
+            destination:
+              server: 'https://kubernetes.default.svc'
+            project: default
+            syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
