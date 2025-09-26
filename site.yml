@@ -38,18 +38,18 @@
         state: present
         definition:
           apiVersion: v1
-        kind: Secret
-        metadata:
-          name: github-repo
-          namespace: openshift-gitops
-          labels:
-            argocd.argoproj.io/secret-type: repository
-        type: Opaque
-        data:
-          name: github-repo
-          url: "https://github.com/makeitworkcloud/gitops-cluster.git"
-          project: default
-          type: git
+          kind: Secret
+          metadata:
+            name: github-repo
+            namespace: openshift-gitops
+            labels:
+              argocd.argoproj.io/secret-type: repository
+          type: Opaque
+          data:
+            name: github-repo
+            url: "https://github.com/makeitworkcloud/gitops-cluster.git"
+            project: default
+            type: git
     - name: ArgoCD Kustomize App
       kubernetes.core.k8s:
         state: present
