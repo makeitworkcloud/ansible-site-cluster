@@ -64,6 +64,7 @@
           spec:
             source:
               repoURL: https://github.com/makeitworkcloud/gitops-cluster.git
+              path: /
               targetRevision: main
             destination:
               server: "https://kubernetes.default.svc"
