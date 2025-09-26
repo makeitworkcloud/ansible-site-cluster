@@ -47,10 +47,10 @@
               argocd.argoproj.io/secret-type: repository
           type: Opaque
           data:
-            name: github-repo
-            url: https://github.com/makeitworkcloud/gitops-cluster.git
-            project: default
-            type: git
+            name: "{{ 'github-repo' | b64encode }}"
+            url: "(( 'https://github.com/makeitworkcloud/gitops-cluster.git' | b64encode ))"
+            project: "{{ 'default' | b64encode }}"
+            type: "{{ 'git' | b64encode }}"
 
     - name: ArgoCD Kustomize App
       kubernetes.core.k8s:
