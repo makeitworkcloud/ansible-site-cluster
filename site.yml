@@ -33,6 +33,7 @@
             kind: ClusterRole
             name: cluster-admin
             apiGroup: rbac.authorization.k8s.io
+
     - name: Argo CD GitHub Repo
       kubernetes.core.k8s:
         state: present
@@ -47,9 +48,10 @@
           type: Opaque
           data:
             name: github-repo
-            url: "https://github.com/makeitworkcloud/gitops-cluster.git"
+            url: https://github.com/makeitworkcloud/gitops-cluster.git
             project: default
             type: git
+
     - name: ArgoCD Kustomize App
       kubernetes.core.k8s:
         state: present
@@ -61,10 +63,10 @@
             namespace: openshift-gitops
           spec:
             source:
-              repoURL: "https://github.com/makeitworkcloud/gitops-cluster.git"
+              repoURL: https://github.com/makeitworkcloud/gitops-cluster.git
               targetRevision: main
             destination:
-              server: 'https://kubernetes.default.svc'
+              server: "https://kubernetes.default.svc"
             project: default
             syncPolicy:
               automated:
