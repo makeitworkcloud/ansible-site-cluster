@@ -48,7 +48,7 @@
           type: Opaque
           data:
             name: "{{ 'github-repo' | b64encode }}"
-            url: "(( 'https://github.com/makeitworkcloud/gitops-cluster.git' | b64encode ))"
+            url: "{{ 'https://github.com/makeitworkcloud/gitops-cluster.git' | b64encode }}"
             project: "{{ 'default' | b64encode }}"
             type: "{{ 'git' | b64encode }}"
 
