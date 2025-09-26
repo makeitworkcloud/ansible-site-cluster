@@ -1,9 +1,0 @@
----
-# defaults file for crc
-crc_cpus: 10 # For a system with 12 CPU
-crc_disk_size: 500 # 500 GB Disk
-crc_memory: 57344 # For a system with 64 GB RAM
-crc_external_domain: makeitwork.cloud
-crc_kubeadmin_password: crc
-crc_pull_secret: ""
-crc_version: 2.52.0
