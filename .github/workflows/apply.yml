@@ -12,13 +12,10 @@ env:
 jobs:
   deploy:
     runs-on: libvirt
-    container: ghcr.io/makeitworkcloud/terraform-runner:latest
+    container: ghcr.io/makeitworkcloud/runner:latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Run Git as root
-        run: git config --global --add safe.directory '*'
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
