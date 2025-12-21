@@ -14,8 +14,7 @@
   roles:
     - role: crc
       vars:
-        crc_gitops_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
-        crc_gitops_repo_url: https://github.com/makeitworkcloud/gitops-cluster.git
-        crc_gitops_repo_branch: main
-        crc_gitops_bootstrap_path: bootstrap
-        crc_gitops_workloads_path: workloads
+        crc_external_domain: makeitwork.cloud
+        crc_argocd_app_repo: https://github.com/makeitworkcloud/kustomize-cluster.git
+        crc_argocd_app_path: bootstrap
+        crc_argocd_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
