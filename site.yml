@@ -8,68 +8,14 @@
       community.sops.load_vars:
         file: secrets/secrets.yaml
 
-- name: Deploy OpenShift Local (crc) and GitOps + KSOPS
+- name: Deploy OpenShift Local (crc) with GitOps + KSOPS
   hosts: all
   gather_facts: true
   roles:
     - role: crc
-    - role: openshift_gitops_ksops
       vars:
-        openshift_gitops_ksops_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
-  tasks:
-    - name: GitOps cluster mgmt ClusterRoleBinding
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata:
-            name: openshift-gitops-operator-cluster-admin
-          subjects:
-            - kind: ServiceAccount
-              name: openshift-gitops-argocd-application-controller
-              namespace: openshift-gitops
-          roleRef:
-            kind: ClusterRole
-            name: cluster-admin
-            apiGroup: rbac.authorization.k8s.io
-
-    - name: Argo CD GitHub Repo
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: github-repo
-            namespace: openshift-gitops
-            labels:
-              argocd.argoproj.io/secret-type: repository
-          type: Opaque
-          data:
-            name: "{{ 'github-repo' | b64encode }}"
-            url: "{{ 'https://github.com/makeitworkcloud/gitops-cluster.git' | b64encode }}"
-            project: "{{ 'default' | b64encode }}"
-            type: "{{ 'git' | b64encode }}"
-
-    - name: ArgoCD Kustomize App
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: gitops-configs
-            namespace: openshift-gitops
-          spec:
-            source:
-              repoURL: https://github.com/makeitworkcloud/gitops-cluster.git
-              path: .
-              targetRevision: main
-            destination:
-              server: "https://kubernetes.default.svc"
-            project: default
-            syncPolicy:
-              automated:
-                prune: true
-                selfHeal: true
+        crc_gitops_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
+        crc_gitops_repo_url: https://github.com/makeitworkcloud/gitops-cluster.git
+        crc_gitops_repo_branch: main
+        crc_gitops_bootstrap_path: bootstrap
+        crc_gitops_workloads_path: workloads
