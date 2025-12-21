@@ -1,5 +1,10 @@
 ---
-- name: crc
-  src: https://github.com/makeitworkcloud/ansible-role-crc
-- name: openshift_gitops_ksops
-  src: https://github.com/makeitworkcloud/ansible-role-ksops
+collections:
+  - name: community.sops
+  - name: kubernetes.core
+
+roles:
+  - name: crc
+    src: https://github.com/makeitworkcloud/ansible-role-crc
+  - name: openshift_gitops_ksops
+    src: https://github.com/makeitworkcloud/ansible-role-ksops
