@@ -18,3 +18,4 @@
         crc_argocd_app_repo: https://github.com/makeitworkcloud/kustomize-cluster.git
         crc_argocd_app_path: bootstrap
         crc_argocd_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
+        crc_console_branding: true
