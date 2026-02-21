@@ -15,6 +15,7 @@
     - role: crc
       vars:
         crc_external_domain: makeitwork.cloud
+        crc_pull_secret: "{{ hostvars['localhost']['crc_pull_secret'] }}"
         crc_argocd_app_repo: https://github.com/makeitworkcloud/kustomize-cluster.git
         crc_argocd_app_path: bootstrap
         crc_argocd_age_keys: "{{ hostvars['localhost']['age_keys'] }}"
