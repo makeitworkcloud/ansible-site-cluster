@@ -12,7 +12,7 @@ env:
 jobs:
   plan:
     runs-on: libvirt
-    container: ghcr.io/makeitworkcloud/runner:latest
+    container: ghcr.io/makeitworkcloud/tfroot-runner:latest
 
     steps:
       - uses: actions/checkout@v4
